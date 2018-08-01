@@ -1,4 +1,4 @@
-# NitroMC
+# Peformia
 Improve performance with less memory usage 
 
 # Features

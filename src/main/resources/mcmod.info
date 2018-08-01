@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "performia",
+    "name": "Performia",
+    "description": "Fixes a few things for a smoother and faster experience",
+    "version": ".1",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Sk1er"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

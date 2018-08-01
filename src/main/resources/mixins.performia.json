@@ -1,0 +1,19 @@
+{
+  "package": "io.performia.mixins",
+  "refmap": "mixins.performia.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "verbose": true,
+  "mixins": [
+    "IMixinAbstractClientPlayer",
+    "IMixinNetworkPlayerInfo",
+    "IMixinRenderItem",
+    "MixinChatComponentStyle",
+    "MixinChatStyle",
+    "MixinFontRenderer",
+    "MixinMinecraft",
+    "MixinRenderItem",
+    "MixinTextureManager",
+    "MixinModelMesher",
+    "MixinGuiIngame"
+  ]
+}

@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.semx11.autotip.util;
+package io.performia.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

@@ -1,7 +1,7 @@
 package io.performia.fixes;
 
 
-import me.semx11.autotip.util.ReflectionUtil;
+import io.performia.util.ReflectionUtil;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.lang.reflect.Field;

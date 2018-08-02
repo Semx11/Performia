@@ -28,8 +28,11 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 import java.util.Map;
@@ -58,64 +61,68 @@ public abstract class MixinTextureManager {
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public boolean loadTexture(ResourceLocation textureLocation, ITextureObject textureObj) {
-        return performiaTextureManager.loadTexture(textureLocation, textureObj, theResourceManager, logger);
+    @Inject(method = "loadTexture", at = @At("HEAD"), cancellable = true)
+    public void loadTexture(ResourceLocation textureLocation, ITextureObject textureObj, CallbackInfoReturnable<Boolean> info) {
+        info.setReturnValue(performiaTextureManager.loadTexture(textureLocation, textureObj, theResourceManager, logger));
     }
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public boolean loadTickableTexture(ResourceLocation textureLocation, ITickableTextureObject textureObj) {
-        return performiaTextureManager.loadTickableTexture(textureLocation, textureObj, listTickables);
+    @Inject(method = "loadTickableTexture", at = @At("HEAD"), cancellable = true)
+    public void loadTickableTexture(ResourceLocation textureLocation, ITickableTextureObject textureObj, CallbackInfoReturnable<Boolean> info) {
+        info.setReturnValue(performiaTextureManager.loadTickableTexture(textureLocation, textureObj, listTickables));
     }
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public ResourceLocation getDynamicTextureLocation(String name, DynamicTexture texture) {
-        return performiaTextureManager.getDynamicTextureLocation(name, texture, mapTextureCounters);
+    @Inject(method = "getDynamicTextureLocation", at = @At("HEAD"), cancellable = true)
+    public void getDynamicTextureLocation(String name, DynamicTexture texture, CallbackInfoReturnable<ResourceLocation> info) {
+        info.setReturnValue(performiaTextureManager.getDynamicTextureLocation(name, texture, mapTextureCounters));
     }
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    @Inject(method = "onResourceManagerReload", at = @At("HEAD"), cancellable = true)
+    public void onResourceManagerReload(IResourceManager resourceManager, CallbackInfo infoReturnable) {
+        infoReturnable.cancel();
         performiaTextureManager.onResourceManagerReload(resourceManager);
     }
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public void bindTexture(ResourceLocation resource) {
+    @Inject(method = "bindTexture", at = @At("HEAD"), cancellable = true)
+    public void bindTexture(ResourceLocation resource, CallbackInfo info) {
+        info.cancel();
         performiaTextureManager.bindTexture(resource);
     }
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public ITextureObject getTexture(ResourceLocation textureLocation) {
-        return performiaTextureManager.getTexture(textureLocation);
+    @Inject(method = "getTexture", at = @At("HEAD"), cancellable = true)
+    public void getTexture(ResourceLocation textureLocation, CallbackInfoReturnable<ITextureObject> info) {
+        info.setReturnValue(performiaTextureManager.getTexture(textureLocation));
     }
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public void tick() {
+    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    public void tick(CallbackInfo info) {
+        info.cancel();
         performiaTextureManager.tick(listTickables);
     }
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public void deleteTexture(ResourceLocation textureLocation) {
+    @Inject(method = "deleteTexture", at = @At("HEAD"), cancellable = true)
+    public void deleteTexture(ResourceLocation textureLocation, CallbackInfo info) {
+        info.cancel();
         performiaTextureManager.deleteTexture(textureLocation);
     }
 

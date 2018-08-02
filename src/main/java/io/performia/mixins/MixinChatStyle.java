@@ -6,7 +6,6 @@ import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,9 +23,9 @@ public abstract class MixinChatStyle {
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public String getFormattingCode() {
-        return performiumChatStyle.getFormattingCode(parentStyle);
+    @Inject(method = "getFormattingCode", at = @At("HEAD"), cancellable = true)
+    public void getFormattingCode(CallbackInfoReturnable<String> info) {
+        info.setReturnValue(performiumChatStyle.getFormattingCode(parentStyle));
     }
 
     /**

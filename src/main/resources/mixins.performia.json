@@ -11,9 +11,7 @@
     "MixinChatStyle",
     "MixinFontRenderer",
     "MixinMinecraft",
-    "MixinRenderItem",
     "MixinTextureManager",
-    "MixinModelMesher",
     "MixinGuiIngame"
   ]
 }

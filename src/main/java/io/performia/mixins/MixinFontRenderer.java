@@ -8,16 +8,16 @@ import io.performia.fixes.StringHash;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Locale;
 import java.util.Map;
@@ -92,8 +92,9 @@ public abstract class MixinFontRenderer {
     /**
      * @author Sk1er
      */
-    @Overwrite
-    private void renderStringAtPos(String text, boolean shadow) {
+    @Inject(method = "renderStringAtPos",at=@At("HEAD"),cancellable = true)
+    private void renderStringAtPos(String text, boolean shadow, CallbackInfo info) {
+        info.cancel();
         //Full speed ahead
         //Should help fix issues
         GlStateModifier.INSTANCE.reset();
@@ -252,56 +253,20 @@ public abstract class MixinFontRenderer {
         }
         GlStateManager.translate(-posX, -posY, 0F);
 
+
     }
 
-    protected void doDraw(float f) {
-        {
-            {
-
-                if (this.strikethroughStyle) {
-                    Tessellator tessellator = Tessellator.getInstance();
-                    WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                    GlStateManager.disableTexture2D();
-                    worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-                    worldrenderer.pos((double) this.posX, (double) (this.posY + (float) (this.FONT_HEIGHT / 2)), 0.0D).endVertex();
-                    worldrenderer.pos((double) (this.posX + f), (double) (this.posY + (float) (this.FONT_HEIGHT / 2)), 0.0D).endVertex();
-                    worldrenderer.pos((double) (this.posX + f), (double) (this.posY + (float) (this.FONT_HEIGHT / 2) - 1.0F), 0.0D).endVertex();
-                    worldrenderer.pos((double) this.posX, (double) (this.posY + (float) (this.FONT_HEIGHT / 2) - 1.0F), 0.0D).endVertex();
-                    tessellator.draw();
-                    GlStateManager.enableTexture2D();
-                }
-
-                if (this.underlineStyle) {
-                    Tessellator tessellator1 = Tessellator.getInstance();
-                    WorldRenderer worldrenderer1 = tessellator1.getWorldRenderer();
-                    GlStateManager.disableTexture2D();
-                    worldrenderer1.begin(7, DefaultVertexFormats.POSITION);
-                    int l = this.underlineStyle ? -1 : 0;
-                    worldrenderer1.pos((double) (this.posX + (float) l), (double) (this.posY + (float) this.FONT_HEIGHT), 0.0D).endVertex();
-                    worldrenderer1.pos((double) (this.posX + f), (double) (this.posY + (float) this.FONT_HEIGHT), 0.0D).endVertex();
-                    worldrenderer1.pos((double) (this.posX + f), (double) (this.posY + (float) this.FONT_HEIGHT - 1.0F), 0.0D).endVertex();
-                    worldrenderer1.pos((double) (this.posX + (float) l), (double) (this.posY + (float) this.FONT_HEIGHT - 1.0F), 0.0D).endVertex();
-                    tessellator1.draw();
-                    GlStateManager.enableTexture2D();
-                }
-
-                this.posX += (float) ((int) f);
-            }
-        }
-    }
-
+    @Shadow protected abstract void doDraw(float f);
 
     /**
      * @author Sk1er
      */
-    @Overwrite
-    public int getStringWidth(String text) {
+    @Inject(method = "getStringWidth",at=@At("HEAD"),cancellable = true)
+    public void getStringWidth(String text, CallbackInfoReturnable<Integer> info) {
         if (text == null) {
-            return 0;
+           info.setReturnValue(0);
         } else {
-
-
-            return PerformiaFontRendererValues.INSTANCE.stringWidthCache.computeIfAbsent(text, (text1) -> {
+            info.setReturnValue(PerformiaFontRendererValues.INSTANCE.stringWidthCache.computeIfAbsent(text, (text1) -> {
                 int i = 0;
                 boolean flag = false;
 
@@ -328,7 +293,7 @@ public abstract class MixinFontRenderer {
                     }
                 }
                 return i;
-            });
+            }));
 
         }
     }

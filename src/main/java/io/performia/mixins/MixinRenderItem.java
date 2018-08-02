@@ -23,7 +23,9 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * A Mixin to the RenderItem class to provide ShinyPots support, not to be confused with the
@@ -37,17 +39,14 @@ public abstract class MixinRenderItem implements IResourceManagerReloadListener 
     private PerformiaRenderItem hyperiumRenderItem = new PerformiaRenderItem((RenderItem) (Object) this);
 
 
-
-
     /**
      * @author Sk1er
      */
-    @Overwrite
-    private void renderModel(IBakedModel model, int color, ItemStack stack) {
-       hyperiumRenderItem.renderModel(model, color, stack);
+    @Inject(method = "renderModel(Lnet/minecraft/client/resources/model/IBakedModel;ILnet/minecraft/item/ItemStack;)V", at = @At("HEAD"), cancellable = true)
+    private void renderModel(IBakedModel model, int color, ItemStack stack, CallbackInfo info) {
+        info.cancel();
+        hyperiumRenderItem.renderModel(model, color, stack);
     }
-
-
 
 
 }
